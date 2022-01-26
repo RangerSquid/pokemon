@@ -66,7 +66,8 @@ public static class BlueRatTAS {
                 }
                 continue;
             }
-            OverworldSearch(gb, new BlueRatTASState {
+            else if(ret == gb.SYM["JoypadOverworld"]) {
+              OverworldSearch(gb, new BlueRatTASState {
                 Log = state.Log + edge.Action.LogString() + " ",
                 Tile = edge.NextTile,
                 EdgeSet = edge.NextEdgeset,
@@ -78,16 +79,13 @@ public static class BlueRatTAS {
             gb.LoadState(oldState);
         }
     }
-
+    }
     public static void StartSearch(int numThreads = 6) {
         Blue dummyGb = new Blue();
         RbyMap viridianCityMap = dummyGb.Maps[1];
         RbyMap route2map = dummyGb.Maps[13];
-        Pathfinding.GenerateEdges<RbyMap, RbyTile>(dummyGb, 0, viridianCityMap[17, 0], Action.Right | Action.Down | Action.Up | Action.Left | Action.A);
-        Pathfinding.GenerateEdges<RbyMap, RbyTile>(dummyGb, 1, route2map[8, 48], Action.Right | Action.Down | Action.Up | Action.Left | Action.A);
+        Pathfinding.GenerateEdges<RbyMap, RbyTile>(dummyGb, 0, route2map[8, 48], Action.Right | Action.Down | Action.Up | Action.Left | Action.A);
         RbyTile startTile = viridianCityMap[19, 9];
-        viridianCityMap[18, 0].AddEdge(0, new Edge<RbyMap, RbyTile>(){Action = Action.Up, NextTile = route2map[8, 71], NextEdgeset = 0, Cost = 0 });
-        viridianCityMap[17, 0].AddEdge(0, new Edge<RbyMap, RbyTile>(){Action = Action.Up, NextTile = route2map[7, 71], NextEdgeset = 0, Cost = 0 });
         Writer = new StreamWriter("Blue Rat TAS" + DateTime.Now.Ticks + ".txt");
         
         for (int threadIndex = 0; threadIndex < numThreads; threadIndex++) {
@@ -95,7 +93,7 @@ public static class BlueRatTAS {
                 int index = (int)parameter;
                 Blue gb = new Blue();
                 Console.WriteLine("starting movie");
-                gb.PlayBizhawkInputLog("movies/BlueRaticateTAS.txt");
+                gb.PlayBizhawkInputLog("movies/BlueRaticateTAS.txt", 18728);
                 gb.SetSpeedupFlags(SpeedupFlags.NoSound | SpeedupFlags.NoVideo);
                 Console.WriteLine("finished movie");
                 gb.RunUntil("JoypadOverworld");
